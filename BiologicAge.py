@@ -14,10 +14,14 @@ class MainWindow:
                                       command=self.openFileDialog)
         self.statusBar = ttk.Label(self.master, relief=tk.SUNKEN,
                                    anchor="w", text='Biological age app')
+        self.canvas = tk.Canvas(self.master, width=512, height=512)
+        self.canvas.create_text(256, 256, text="Open file first",
+                                anchor='center')
 
         # Positions
-        self.openFileBtn.grid(column=1, row=1)
-        self.statusBar.grid(column=1, row=2)
+        self.canvas.grid(column=1, row=1)
+        self.openFileBtn.grid(column=2, row=1, sticky='n')
+        self.statusBar.grid(column=1, row=2, columnspan=2, sticky='we')
 
     def openFileDialog(self):
         filetypes = [('DiCOM files', '*.dcm'),
@@ -25,6 +29,7 @@ class MainWindow:
         dialog = filedialog.Open(self.master, filetypes=filetypes)
         self.file = dialog.show()
         print('Opening', self.file)
+        self.statusBar['text'] = 'File {} opened'.format(self.file)
 
 
 def main():
