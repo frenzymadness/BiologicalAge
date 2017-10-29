@@ -14,9 +14,7 @@ class MainWindow:
 
         # Control variables
         self.contrast = tk.DoubleVar()
-        self.contrast.set(1.0)
         self.brightness = tk.DoubleVar()
-        self.brightness.set(1.0)
 
         # Widgets
         self.openFileBtn = ttk.Button(self.master, text="Open file",
@@ -51,6 +49,7 @@ class MainWindow:
         self.filename = dialog.show()
         self.dicom = Dicom(self.filename)
         self.drawImage(self.dicom.image)
+        self.reset()
         self.setStatus('File {} opened'.format(self.filename))
 
     def drawImage(self, image):
@@ -73,6 +72,11 @@ class MainWindow:
 
     def setStatus(self, status):
         self.statusBar['text'] = status
+
+    def reset(self):
+        self.contrast.set(1.0)
+        self.brightness.set(1.0)
+        self.setStatus('')
 
 
 def main():
