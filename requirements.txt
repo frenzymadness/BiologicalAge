@@ -1,0 +1,5 @@
+mccabe==0.6.1
+numpy==1.13.3
+olefile==0.44
+Pillow==4.3.0
+pydicom==0.9.9
