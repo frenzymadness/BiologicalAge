@@ -88,6 +88,7 @@ class MainWindow:
         self.contrast.set(1.0)
         self.brightness.set(1.0)
         self.setStatus('')
+        self.table.delete(*self.table.get_children())
 
     def fillInfoTable(self):
         important_data = ['DeviceSerialNumber',
