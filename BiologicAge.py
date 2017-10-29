@@ -2,7 +2,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
-from libs.DicomImage import DicomImage
+from libs.DicomImage import Dicom
 from PIL import ImageTk
 
 
@@ -10,7 +10,7 @@ class MainWindow:
     def __init__(self, master):
         self.master = master
         self.filename = None
-        self.file = None
+        self.dicom = None
 
         # Control variables
         self.contrast = tk.DoubleVar()
@@ -49,8 +49,8 @@ class MainWindow:
                      ('All files', '*')]
         dialog = filedialog.Open(self.master, filetypes=filetypes)
         self.filename = dialog.show()
-        self.file = DicomImage(self.filename)
-        self.drawImage(self.file.image)
+        self.dicom = Dicom(self.filename)
+        self.drawImage(self.dicom.image)
         self.statusBar['text'] = 'File {} opened'.format(self.filename)
 
     def drawImage(self, image):
@@ -64,8 +64,8 @@ class MainWindow:
                                  image=self.image)
 
     def enhanceImage(self, event):
-        image = self.file.get_enhanced_image(self.contrast.get(),
-                                             self.brightness.get())
+        image = self.dicom.get_enhanced_image(self.contrast.get(),
+                                              self.brightness.get())
         self.drawImage(image)
 
 

@@ -2,7 +2,7 @@ import dicom
 from PIL import Image, ImageEnhance
 
 
-class DicomImage:
+class Dicom:
     def __init__(self, filename):
         self.filename = filename
         self.dicom_data = dicom.read_file(filename)
