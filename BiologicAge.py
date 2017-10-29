@@ -51,7 +51,7 @@ class MainWindow:
         self.filename = dialog.show()
         self.dicom = Dicom(self.filename)
         self.drawImage(self.dicom.image)
-        self.statusBar['text'] = 'File {} opened'.format(self.filename)
+        self.setStatus('File {} opened'.format(self.filename))
 
     def drawImage(self, image):
         # Canvas size
@@ -64,9 +64,15 @@ class MainWindow:
                                  image=self.image)
 
     def enhanceImage(self, event):
-        image = self.dicom.get_enhanced_image(self.contrast.get(),
-                                              self.brightness.get())
+        contrast = self.contrast.get()
+        brightness = self.brightness.get()
+        image = self.dicom.get_enhanced_image(contrast, brightness)
         self.drawImage(image)
+        self.setStatus('Image enhanced. Contrast: {:.2f}, Brightness: {:.2f}'
+                       .format(contrast, brightness))
+
+    def setStatus(self, status):
+        self.statusBar['text'] = status
 
 
 def main():
