@@ -33,13 +33,23 @@ class MainWindow:
                                          command=self.enhanceImage)
         self.brightnessLabel = ttk.Label(self.master, text='Brightness level')
 
+        # Info table
+        self.table = ttk.Treeview(self.master, columns=('value'))
+        self.table.heading('#0', text='Key')
+        self.table.heading('#1', text='Value')
+        self.table.column('#0', stretch=tk.YES)
+        self.table.column('#1', stretch=tk.YES)
+
         # Positions
-        self.canvas.grid(column=1, row=1, columnspan=2)
-        self.contrastLabel.grid(column=1, row=2, sticky='we')
+        self.canvas.grid(column=1, row=1, columnspan=2, rowspan=2,
+                         sticky='nswe')
+        self.contrastLabel.grid(column=1, row=2, sticky='swe')
         self.contrastScale.grid(column=1, row=3, sticky='we')
-        self.brightnessLabel.grid(column=2, row=2, sticky='we')
+        self.brightnessLabel.grid(column=2, row=2, sticky='swe')
         self.brightnessScale.grid(column=2, row=3, sticky='we')
-        self.openFileBtn.grid(column=3, row=1, sticky='n')
+        self.openFileBtn.grid(column=3, row=1, sticky='nw')
+        self.table.grid(row=2, column=3, columnspan=2, rowspan=2,
+                        sticky='nsew')
         self.statusBar.grid(column=1, row=4, columnspan=3, sticky='we')
 
     def openFileDialog(self):
@@ -50,6 +60,7 @@ class MainWindow:
         self.dicom = Dicom(self.filename)
         self.drawImage(self.dicom.image)
         self.reset()
+        self.fillInfoTable()
         self.setStatus('File {} opened'.format(self.filename))
 
     def drawImage(self, image):
@@ -77,6 +88,22 @@ class MainWindow:
         self.contrast.set(1.0)
         self.brightness.set(1.0)
         self.setStatus('')
+
+    def fillInfoTable(self):
+        important_data = ['DeviceSerialNumber',
+                          'Manufacturer',
+                          'Modality',
+                          'InstitutionName',
+                          'PatientName',
+                          'PatientBirthDate',
+                          'PatientSex',
+                          'BodyPartExamined',
+                          'ViewPosition',
+                          ]
+
+        for attr in important_data:
+            value = getattr(self.dicom.data, attr)
+            self.table.insert('', 'end', text=attr, values=(value))
 
 
 def main():
