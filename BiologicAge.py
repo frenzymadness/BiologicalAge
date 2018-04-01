@@ -32,6 +32,7 @@ class MainWindow():
             widget.clicked.connect(partial(self.save_answer, n))
 
     def load_ref_img_list(self, _=None, subset=None):
+        """Loads list of reference images"""
         # 0 -> Boy, 1 -> Girl
         index = self.window.sexCombo.currentIndex()
         # Create path to folder with RTGs
@@ -62,12 +63,14 @@ class MainWindow():
             self.window.refList.addItem(name)
 
     def _load_image(self, filename, widget):
+        """Load image to the specified widget with proper size"""
         if filename is not None:
             pixmap = QtGui.QPixmap(filename)
             w = min(pixmap.width(), widget.maximumWidth())
             h = min(pixmap.height(), widget.maximumHeight())
             pixmap = pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio,
                                    QtCore.Qt.SmoothTransformation)
+            # Try to put image name to the name label if exists
             try:
                 widget_name = widget.objectName()
                 name_widget = getattr(self.window, widget_name + 'Name')
@@ -75,10 +78,12 @@ class MainWindow():
             except AttributeError:
                 pass
         else:
+            # Use empty pixmap if no file given
             pixmap = QtGui.QPixmap()
         widget.setPixmap(pixmap)
 
     def open_ref_image(self):
+        """Open and show choosen reference image"""
         item = self.window.refList.currentItem()
         if item is None:
             return
@@ -87,6 +92,7 @@ class MainWindow():
         self._load_image(filename, self.window.refImg)
 
     def open_rtg_image(self):
+        """Open and show RTG image and start assesment"""
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.window, "Open RTG file", "",
             "Images (*.png *.PNG *.jpg *.jpeg *.JPG);;All Files (*);;")
@@ -101,6 +107,8 @@ class MainWindow():
         self.window.resetEvaluation.setEnabled(True)
 
     def next_question(self):
+        """Process next question in assesment process"""
+        # Disable inputs if last question reached
         try:
             question, folder = self.dt.get_question()
         except IndexError:
@@ -109,6 +117,8 @@ class MainWindow():
 
         self.toggle_question_input(enable=True)
 
+        # Load images of TW patterns or empty images if question is about
+        # number and not bone status
         for n in range(1, 9):
             widget = getattr(self.window, 'twImg' + str(n))
             if folder is not None:
@@ -120,6 +130,7 @@ class MainWindow():
         self.window.questionLabel.setText(question)
 
     def toggle_question_input(self, enable=True):
+        """Enable/Disable question input buttons"""
         widgets_names = []
         for n in range(1, 9):
             widgets_names.append('twAnswer' + str(n))
@@ -130,11 +141,13 @@ class MainWindow():
             w.setEnabled(enable)
 
     def restart_decision_tree(self):
+        """Restart decision tree process"""
         self.dt = DecisionTree(type=self.sex)
         self.load_ref_img_list()
         self.next_question()
 
     def save_answer(self, index):
+        """Save answer after button click and go to next"""
         subset = self.dt.save_answer(index)
         self.load_ref_img_list(None, subset)
         self.next_question()
