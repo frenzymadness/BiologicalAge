@@ -65,6 +65,20 @@ class MainWindow():
             return
         self._load_image(filename, self.window.rtgImgLabel)
 
+    def toggle_question_input(self, type='number', enabled=True):
+        if type == 'number':
+            widgets_names = ['numberQuestionLabel', 'numberQuestionCombo']
+        else:
+            widgets_names = []
+            for n in range(1, 9):
+                for t in 'twImg', 'twAnswer':
+                    widgets_names.append(t + str(n))
+
+        widgets = [getattr(self.window, w) for w in widgets_names]
+
+        for w in widgets:
+            w.setEnabled(enabled)
+
     def run(self):
         self.window.show()
         return self.app.exec()
