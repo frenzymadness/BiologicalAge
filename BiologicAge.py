@@ -3,20 +3,12 @@ from os import listdir
 from os.path import isfile, join
 from collections import OrderedDict
 from functools import partial
+import json
 
 from PyQt5 import QtWidgets, uic, QtGui
 import pandas as pd
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-
-questions = [
-    ('Select the state of Radius', 'image', 'radius'),
-    ('Select the state of os trapeziodeum', 'image', 'trapeziodeum'),
-    ('Select the state of os trapezium', 'image', 'trapezium'),
-    ('Select the state of distal phalang of fifth finger', 'image', 'distal'),
-    ('How many carpal bones are visible?', 'number', None),
-    ('Select the state of os lunatum', 'image', 'lunatum'),
-]
 
 
 class DecisionTree():
@@ -26,7 +18,8 @@ class DecisionTree():
         Y = data.values[:, -1].astype('float64')
         clf = DecisionTreeClassifier(min_samples_split=5)
         self.groups = self.calculate_groups(Y)
-        self.questions = questions
+        with open(join('data', 'questions.json')) as fh:
+            self.questions = json.load(fh)
         self.current_question = -1
         self.answers = [0 for _ in self.questions]
         self.dt = clf.fit(X, Y)
