@@ -102,24 +102,46 @@
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="refImgLabel">
-      <property name="minimumSize">
-       <size>
-        <width>460</width>
-        <height>530</height>
-       </size>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,100">
+      <item>
+       <widget class="QLabel" name="refImgName">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="refImg">
+        <property name="minimumSize">
+         <size>
+          <width>460</width>
+          <height>530</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
-     <widget class="QLabel" name="rtgImgLabel">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
+     <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,100">
+      <item>
+       <widget class="QLabel" name="rtgImgName">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="rtgImg">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_4">

@@ -66,6 +66,12 @@ class MainWindow():
         if filename is not None:
             image = QtGui.QPixmap(filename)
             image = image.scaledToWidth(widget.width())
+            try:
+                widget_name = widget.objectName()
+                name_widget = getattr(self.window, widget_name + 'Name')
+                name_widget.setText(filename)
+            except AttributeError:
+                pass
         else:
             image = QtGui.QPixmap()
         widget.setPixmap(image)
@@ -76,7 +82,7 @@ class MainWindow():
             return
         name = item.text()
         filename = self.ref_images[name]
-        self._load_image(filename, self.window.refImgLabel)
+        self._load_image(filename, self.window.refImg)
 
     def open_rtg_image(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -84,7 +90,7 @@ class MainWindow():
             "Images (*.png *.PNG *.jpg *.jpeg *.JPG);;All Files (*);;")
         if filename is None:
             return
-        self._load_image(filename, self.window.rtgImgLabel)
+        self._load_image(filename, self.window.rtgImg)
 
         # Start asking questions
         self.restart_decision_tree()
