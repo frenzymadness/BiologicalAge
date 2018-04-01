@@ -6,7 +6,7 @@ from functools import partial
 
 from libs.DecisionTree import DecisionTree
 
-from PyQt5 import QtWidgets, uic, QtGui
+from PyQt5 import QtWidgets, uic, QtGui, QtCore
 
 
 class MainWindow():
@@ -63,8 +63,11 @@ class MainWindow():
 
     def _load_image(self, filename, widget):
         if filename is not None:
-            image = QtGui.QPixmap(filename)
-            image = image.scaledToWidth(widget.width())
+            pixmap = QtGui.QPixmap(filename)
+            w = min(pixmap.width(), widget.maximumWidth())
+            h = min(pixmap.height(), widget.maximumHeight())
+            pixmap = pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio,
+                                   QtCore.Qt.SmoothTransformation)
             try:
                 widget_name = widget.objectName()
                 name_widget = getattr(self.window, widget_name + 'Name')
@@ -72,8 +75,8 @@ class MainWindow():
             except AttributeError:
                 pass
         else:
-            image = QtGui.QPixmap()
-        widget.setPixmap(image)
+            pixmap = QtGui.QPixmap()
+        widget.setPixmap(pixmap)
 
     def open_ref_image(self):
         item = self.window.refList.currentItem()
