@@ -13,15 +13,18 @@ from sklearn.tree import DecisionTreeClassifier
 
 class DecisionTree():
     def __init__(self, type='b'):
-        data = pd.read_csv(join('data', type, 'data.csv'))
-        X = data.values[:, 1:-1].astype('float64')
-        Y = data.values[:, -1].astype('float64')
-        clf = DecisionTreeClassifier(min_samples_split=5)
+        self.data = pd.read_csv(join('data', type, 'data.csv'))
+        Y = self.data.values[:, -1].astype('float64')
         self.groups = self.calculate_groups(Y)
         with open(join('data', 'questions.json')) as fh:
             self.questions = json.load(fh)
-        self.current_question = -1
-        self.answers = [0 for _ in self.questions]
+        self.current_question = 0
+        self.answers = []
+
+    def train(self):
+        X = self.data.values[:, 1:self.current_question+1].astype('float64')
+        Y = self.data.values[:, -1].astype('float64')
+        clf = DecisionTreeClassifier(min_samples_split=5)
         self.dt = clf.fit(X, Y)
 
     def calculate_groups(self, Y):
@@ -35,9 +38,10 @@ class DecisionTree():
     def get_question(self):
         self.current_question += 1
         print('current question', self.current_question, self.answers)
-        return self.questions[self.current_question]
+        return self.questions[self.current_question-1]
 
     def predict(self):
+        self.train()
         prediction = self.dt.predict(np.array(self.answers).reshape(1, -1))
         print('prediction array', prediction)
         prediction = int(prediction[0]) - 1
@@ -48,7 +52,7 @@ class DecisionTree():
         return lower, upper
 
     def save_answer(self, answer):
-        self.answers[self.current_question] = answer
+        self.answers.append(answer)
         return self.predict()
 
 
