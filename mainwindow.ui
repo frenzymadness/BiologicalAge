@@ -115,7 +115,13 @@
         <property name="minimumSize">
          <size>
           <width>460</width>
-          <height>530</height>
+          <height>608</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>460</width>
+          <height>608</height>
          </size>
         </property>
         <property name="text">
@@ -136,6 +142,18 @@
       </item>
       <item>
        <widget class="QLabel" name="rtgImg">
+        <property name="minimumSize">
+         <size>
+          <width>460</width>
+          <height>608</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>460</width>
+          <height>608</height>
+         </size>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -169,6 +187,18 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -181,6 +211,18 @@
          <widget class="QLabel" name="twImg4">
           <property name="enabled">
            <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
           </property>
           <property name="text">
            <string/>
@@ -205,6 +247,18 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -217,6 +271,18 @@
          <widget class="QLabel" name="twImg1">
           <property name="enabled">
            <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
           </property>
           <property name="text">
            <string/>
@@ -271,6 +337,18 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -294,6 +372,18 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -306,6 +396,18 @@
          <widget class="QLabel" name="twImg7">
           <property name="enabled">
            <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
           </property>
           <property name="text">
            <string/>
@@ -329,6 +431,18 @@
          <widget class="QLabel" name="twImg2">
           <property name="enabled">
            <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>87</height>
+           </size>
           </property>
           <property name="text">
            <string/>

@@ -25,6 +25,7 @@ class MainWindow():
         )
         self.window.refList.currentItemChanged.connect(self.open_ref_image)
         self.window.openFileButton.clicked.connect(self.open_rtg_image)
+        self.window.resetEvaluation.clicked.connect(self.restart_decision_tree)
 
         for n in range(1, 9):
             widget = getattr(self.window, 'twAnswer' + str(n))
@@ -52,8 +53,6 @@ class MainWindow():
         # Create dictionary with files and paths and insert item to the list
         self.window.refList.clear()
         self.ref_images = OrderedDict()
-        print('limits', lower, upper)
-        print('images subset', sorted_files[lower:upper])
         for name in sorted_files[lower:upper]:
             filename = name
             y, m = name.split('_')[:2]
@@ -95,6 +94,9 @@ class MainWindow():
         # Start asking questions
         self.restart_decision_tree()
 
+        # Enable button to reset evaluation
+        self.window.resetEvaluation.setEnabled(True)
+
     def next_question(self):
         try:
             question, folder = self.dt.get_question()
@@ -130,7 +132,6 @@ class MainWindow():
         self.next_question()
 
     def save_answer(self, index):
-        print('save answer', index)
         subset = self.dt.save_answer(index)
         self.load_ref_img_list(None, subset)
         self.next_question()
