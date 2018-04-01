@@ -1,8 +1,55 @@
 #!/usr/bin/env python3
-from PyQt5 import QtWidgets, uic, QtGui
 from os import listdir
 from os.path import isfile, join
 from collections import OrderedDict
+from functools import partial
+
+from PyQt5 import QtWidgets, uic, QtGui
+import pandas as pd
+import numpy as np
+from sklearn.tree import DecisionTreeClassifier
+
+questions = [
+    ('Select the state of Radius', 'image', 'radius'),
+    ('Select the state of os trapeziodeum', 'image', 'trapeziodeum'),
+    ('Select the state of os trapezium', 'image', 'trapezium'),
+    ('Select the state of distal phalang of fifth finger', 'image', 'distal'),
+    ('How many carpal bones are visible?', 'number', None),
+    ('Select the state of os lunatum', 'image', 'lunatum'),
+]
+
+groups = [4, 4, 2, 2, 1, 2, 1, 1, 1, 3, 2, 3, 3]
+
+
+class DecisionTree():
+    def __init__(self, type='b'):
+        data = pd.read_csv(join('data', type, 'data.csv'))
+        X = data.values[:, 1:-1].astype('float64')
+        Y = data.values[:, -1].astype('float64')
+        clf = DecisionTreeClassifier(min_samples_split=5)
+        self.questions = questions
+        self.current_question = -1
+        self.answers = [0 for _ in self.questions]
+        self.dt = clf.fit(X, Y)
+
+    def get_question(self):
+        self.current_question += 1
+        print('current question', self.current_question, self.answers)
+        return self.questions[self.current_question]
+
+    def predict(self):
+        prediction = self.dt.predict(np.array(self.answers).reshape(1, -1))
+        print('prediction array', prediction)
+        prediction = int(prediction[0]) - 1
+        print('prediction integer', prediction)
+        lower = sum(groups[:prediction])
+        upper = lower + groups[prediction]
+        print('bounds', lower, upper)
+        return lower, upper
+
+    def save_answer(self, answer):
+        self.answers[self.current_question] = answer
+        return self.predict()
 
 
 class MainWindow():
@@ -22,21 +69,38 @@ class MainWindow():
         self.window.refList.currentItemChanged.connect(self.open_ref_image)
         self.window.openFileButton.clicked.connect(self.open_rtg_image)
 
-    def load_ref_img_list(self):
+        self.window.numberQuestionCombo.currentIndexChanged[int].connect(
+            self.save_answer
+        )
+        for n in range(1, 9):
+            widget = getattr(self.window, 'twAnswer' + str(n))
+            widget.clicked.connect(partial(self.save_answer, n))
+
+    def load_ref_img_list(self, _=None, subset=None):
         # 0 -> Boy, 1 -> Girl
         index = self.window.sexCombo.currentIndex()
         # Create path to folder with RTGs
         folder = 'B' if index == 0 else 'G'
+        self.sex = folder.lower()
         path = join('images', 'RTG', folder)
         # List, everything, extract files and sort them
         all = listdir(path)
         files = [name for name in all if isfile(join(path, name))]
         sorted_files = sorted(files,
                               key=lambda n: [int(x) for x in n.split('_')[:2]])
+        # Process given subset or all images if no subset is given
+        if subset is None:
+            lower, upper = 0, len(sorted_files)
+        else:
+            lower, upper = subset
+
+        self.window.openFileButton.setEnabled(True)
         # Create dictionary with files and paths and insert item to the list
         self.window.refList.clear()
         self.ref_images = OrderedDict()
-        for name in sorted_files:
+        print('limits', lower, upper)
+        print('images subset', sorted_files[lower:upper])
+        for name in sorted_files[lower:upper]:
             filename = name
             y, m = name.split('_')[:2]
             y, m = int(y), int(m)
@@ -65,19 +129,55 @@ class MainWindow():
             return
         self._load_image(filename, self.window.rtgImgLabel)
 
+        # Start asking questions
+        self.restart_decision_tree()
+
+    def next_question(self):
+        try:
+            question, type, folder = self.dt.get_question()
+        except IndexError:
+            self.disable_question_inputs()
+            return
+
+        print('next question', question, type, folder)
+        self.disable_question_inputs()
+        self.toggle_question_input(type=type, enabled=True)
+        if type == 'image':
+            path = join('images', 'patterns', folder)
+            for n in range(1, 9):
+                widget = getattr(self.window, 'twImg' + str(n))
+                self._load_image(join(path, str(n) + '.png'), widget)
+        widget = getattr(self.window, type + 'Question')
+        widget.setText(question)
+
     def toggle_question_input(self, type='number', enabled=True):
         if type == 'number':
-            widgets_names = ['numberQuestionLabel', 'numberQuestionCombo']
+            widgets_names = ['numberQuestion', 'numberQuestionCombo']
         else:
             widgets_names = []
             for n in range(1, 9):
-                for t in 'twImg', 'twAnswer':
-                    widgets_names.append(t + str(n))
+                widgets_names.append('twAnswer' + str(n))
 
         widgets = [getattr(self.window, w) for w in widgets_names]
 
         for w in widgets:
             w.setEnabled(enabled)
+
+    def disable_question_inputs(self):
+        self.toggle_question_input(type='image', enabled=False)
+        self.toggle_question_input(type='number', enabled=False)
+
+    def restart_decision_tree(self):
+        self.window.numberQuestionCombo.setCurrentIndex(-1)
+        self.dt = DecisionTree(type=self.sex)
+        self.load_ref_img_list()
+        self.next_question()
+
+    def save_answer(self, index):
+        print('save answer', index)
+        subset = self.dt.save_answer(index)
+        self.load_ref_img_list(None, subset)
+        self.next_question()
 
     def run(self):
         self.window.show()
