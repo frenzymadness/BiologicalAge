@@ -1,32 +1,26 @@
 [
   [
     "Select the state of Radius",
-    "image",
     "radius"
   ],
   [
     "Select the state of os trapeziodeum",
-    "image",
     "trapeziodeum"
   ],
   [
     "Select the state of os trapezium",
-    "image",
     "trapezium"
   ],
   [
     "Select the state of distal phalang of fifth finger",
-    "image",
     "distal"
   ],
   [
     "How many carpal bones are visible?",
-    "number",
     null
   ],
   [
     "Select the state of os lunatum",
-    "image",
     "lunatum"
   ]
 ]

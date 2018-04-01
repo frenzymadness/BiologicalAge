@@ -26,9 +26,6 @@ class MainWindow():
         self.window.refList.currentItemChanged.connect(self.open_ref_image)
         self.window.openFileButton.clicked.connect(self.open_rtg_image)
 
-        self.window.numberQuestionCombo.currentIndexChanged[int].connect(
-            self.save_answer
-        )
         for n in range(1, 9):
             widget = getattr(self.window, 'twAnswer' + str(n))
             widget.clicked.connect(partial(self.save_answer, n))
@@ -66,8 +63,11 @@ class MainWindow():
             self.window.refList.addItem(name)
 
     def _load_image(self, filename, widget):
-        image = QtGui.QPixmap(filename)
-        image = image.scaledToWidth(widget.width())
+        if filename is not None:
+            image = QtGui.QPixmap(filename)
+            image = image.scaledToWidth(widget.width())
+        else:
+            image = QtGui.QPixmap()
         widget.setPixmap(image)
 
     def open_ref_image(self):
@@ -91,41 +91,34 @@ class MainWindow():
 
     def next_question(self):
         try:
-            question, type, folder = self.dt.get_question()
+            question, folder = self.dt.get_question()
         except IndexError:
-            self.disable_question_inputs()
+            self.toggle_question_input(enable=False)
             return
 
-        print('next question', question, type, folder)
-        self.disable_question_inputs()
-        self.toggle_question_input(type=type, enabled=True)
-        if type == 'image':
-            path = join('images', 'patterns', folder)
-            for n in range(1, 9):
-                widget = getattr(self.window, 'twImg' + str(n))
-                self._load_image(join(path, str(n) + '.png'), widget)
-        widget = getattr(self.window, type + 'Question')
-        widget.setText(question)
+        self.toggle_question_input(enable=True)
 
-    def toggle_question_input(self, type='number', enabled=True):
-        if type == 'number':
-            widgets_names = ['numberQuestion', 'numberQuestionCombo']
-        else:
-            widgets_names = []
-            for n in range(1, 9):
-                widgets_names.append('twAnswer' + str(n))
+        for n in range(1, 9):
+            widget = getattr(self.window, 'twImg' + str(n))
+            if folder is not None:
+                path = join('images', 'patterns', folder)
+                self._load_image(join(path, str(n) + '.png'), widget)
+            else:
+                self._load_image(None, widget)
+
+        self.window.questionLabel.setText(question)
+
+    def toggle_question_input(self, enable=True):
+        widgets_names = []
+        for n in range(1, 9):
+            widgets_names.append('twAnswer' + str(n))
 
         widgets = [getattr(self.window, w) for w in widgets_names]
 
         for w in widgets:
-            w.setEnabled(enabled)
-
-    def disable_question_inputs(self):
-        self.toggle_question_input(type='image', enabled=False)
-        self.toggle_question_input(type='number', enabled=False)
+            w.setEnabled(enable)
 
     def restart_decision_tree(self):
-        self.window.numberQuestionCombo.setCurrentIndex(-1)
         self.dt = DecisionTree(type=self.sex)
         self.load_ref_img_list()
         self.next_question()

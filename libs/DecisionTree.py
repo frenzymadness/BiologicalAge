@@ -32,18 +32,14 @@ class DecisionTree():
 
     def get_question(self):
         self.current_question += 1
-        print('current question', self.current_question, self.answers)
         return self.questions[self.current_question-1]
 
     def predict(self):
         self.train()
         prediction = self.dt.predict(np.array(self.answers).reshape(1, -1))
-        print('prediction array', prediction)
         prediction = int(prediction[0]) - 1
-        print('prediction integer', prediction)
         lower = sum(self.groups[:prediction])
         upper = lower + self.groups[prediction]
-        print('bounds', lower, upper)
         return lower, upper
 
     def save_answer(self, answer):
