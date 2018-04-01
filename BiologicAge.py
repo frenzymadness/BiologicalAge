@@ -18,8 +18,6 @@ questions = [
     ('Select the state of os lunatum', 'image', 'lunatum'),
 ]
 
-groups = [4, 4, 2, 2, 1, 2, 1, 1, 1, 3, 2, 3, 3]
-
 
 class DecisionTree():
     def __init__(self, type='b'):
@@ -27,10 +25,19 @@ class DecisionTree():
         X = data.values[:, 1:-1].astype('float64')
         Y = data.values[:, -1].astype('float64')
         clf = DecisionTreeClassifier(min_samples_split=5)
+        self.groups = self.calculate_groups(Y)
         self.questions = questions
         self.current_question = -1
         self.answers = [0 for _ in self.questions]
         self.dt = clf.fit(X, Y)
+
+    def calculate_groups(self, Y):
+        groups = []
+        list_of_groups = list(Y)
+        for x in set(Y):
+            groups.append(list_of_groups.count(x))
+
+        return groups
 
     def get_question(self):
         self.current_question += 1
@@ -42,8 +49,8 @@ class DecisionTree():
         print('prediction array', prediction)
         prediction = int(prediction[0]) - 1
         print('prediction integer', prediction)
-        lower = sum(groups[:prediction])
-        upper = lower + groups[prediction]
+        lower = sum(self.groups[:prediction])
+        upper = lower + self.groups[prediction]
         print('bounds', lower, upper)
         return lower, upper
 
