@@ -16,6 +16,9 @@ class MainWindow():
         with open('mainwindow.ui') as f:
             uic.loadUi(f, self.window)
 
+        # Add logo
+        self._load_image(join('images', 'BME.jpg'), self.window.logo)
+
         # Clear
         self.window.refList.clear()
 
