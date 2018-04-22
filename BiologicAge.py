@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, basename
 from collections import OrderedDict
 from functools import partial
 
@@ -74,7 +74,11 @@ class MainWindow():
             try:
                 widget_name = widget.objectName()
                 name_widget = getattr(self.window, widget_name + 'Name')
-                name_widget.setText(filename)
+                if widget_name == 'refImg':
+                    prefix = 'Referrence image: '
+                elif widget_name == 'rtgImg':
+                    prefix = 'Clinical image: '
+                name_widget.setText(prefix + basename(filename))
             except AttributeError:
                 pass
         else:
