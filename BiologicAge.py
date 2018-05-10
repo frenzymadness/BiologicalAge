@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-from os import listdir
+from os import listdir, chdir
 from os.path import isfile, join, basename
 from collections import OrderedDict
 from functools import partial
+import sys
 
 from libs.DecisionTree import DecisionTree
 
 from PyQt5 import QtWidgets, uic, QtGui, QtCore
+
+# Change CWD to temp directory if we run in pyinstalled bundle mode
+if hasattr(sys, '_MEIPASS'):
+    chdir(sys._MEIPASS)
 
 
 class MainWindow():
