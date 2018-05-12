@@ -6,6 +6,7 @@ from functools import partial
 import sys
 
 from libs.DecisionTree import DecisionTree
+from libs.DicomImage import Dicom
 
 from PyQt5 import QtWidgets, uic, QtGui, QtCore
 
@@ -73,7 +74,11 @@ class MainWindow():
     def _load_image(self, filename, widget):
         """Load image to the specified widget with proper size"""
         if filename is not None:
-            pixmap = QtGui.QPixmap(filename)
+            if filename.endswith('.dcm'):
+                dicom_file = Dicom(filename)
+                pixmap = QtGui.QPixmap.fromImage(dicom_file.image)
+            else:
+                pixmap = QtGui.QPixmap(filename)
             w = min(pixmap.width(), widget.maximumWidth())
             h = min(pixmap.height(), widget.maximumHeight())
             pixmap = pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio,
@@ -107,7 +112,8 @@ class MainWindow():
         """Open and show RTG image and start assesment"""
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.window, "Open RTG file", "",
-            "Images (*.png *.PNG *.jpg *.jpeg *.JPG);;All Files (*);;")
+            "Images (*.png *.PNG *.jpg *.jpeg *.JPG *.JPEG *.DCM *.dcm);;\
+            All Files (*);;")
         if filename is None:
             return
         self._load_image(filename, self.window.rtgImg)

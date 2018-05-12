@@ -1,5 +1,5 @@
 import dicom
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageQt
 
 
 class Dicom:
@@ -8,12 +8,8 @@ class Dicom:
 
         # Information related to image
         self.data = dicom.read_file(filename)
-        self.size_x = self.data.Rows
-        self.size_y = self.data.Columns
-        self.pixel_spacing_x = self.data.PixelSpacing[0]
-        self.pixel_spacing_y = self.data.PixelSpacing[1]
+        self.size = (self.data.Rows, self.data.Columns)
         self.image = self.get_8bit_image()
-        self.original_image = self.get_8bit_image()
 
     def get_8bit_image(self):
         # Get pixel data as float numbers
@@ -22,10 +18,5 @@ class Dicom:
         array = (array / array.max()) * 255
         # Create and return image in right mode
         image = Image.fromarray(array)
-        return image.convert('L')
-
-    def get_enhanced_image(self, contrast_level, brightness_level):
-        contrast = ImageEnhance.Contrast(self.original_image)
-        with_contrast = contrast.enhance(contrast_level)
-        brightness = ImageEnhance.Brightness(with_contrast)
-        return brightness.enhance(brightness_level)
+        converted = image.convert('L')
+        return ImageQt.ImageQt(converted)
