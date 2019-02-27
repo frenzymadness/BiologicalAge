@@ -1,4 +1,4 @@
-import dicom
+import pydicom
 from PIL import Image, ImageQt
 
 
@@ -7,7 +7,7 @@ class Dicom:
         self.filename = filename
 
         # Information related to image
-        self.data = dicom.read_file(filename)
+        self.data = pydicom.read_file(filename)
         self.size = (self.data.Rows, self.data.Columns)
         self.image = self.get_8bit_image()
 
